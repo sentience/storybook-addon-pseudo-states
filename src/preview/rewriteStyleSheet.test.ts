@@ -171,6 +171,16 @@ describe("rewriteStyleSheet", () => {
     expect(sheet.cssRules[0].getSelectors()).toContain(".pseudo-hover-all ::part(foo bar)")
   })
 
+  it("does not replace escaped pseudo-class names (e.g. Tailwind variants)", () => {
+    const sheet = new Sheet(".foo\\:hover { cursor: default; }")
+    rewriteStyleSheet(sheet as any)
+    // expect(sheet.cssRules[0].getSelectors()).not.toContain(".foo\\:bar.pseudo-hover")
+    console.log(sheet.cssRules[0].getSelectors())
+    expect(sheet.cssRules[0].getSelectors().filter((x) => ![".foo\\:hover"].includes(x))).toEqual(
+      [],
+    )
+  })
+
   it("adds alternative selector when .pseudo-<class> would not be appended to ::part()", () => {
     const sheet = new Sheet("custom-elt:hover::part(foo bar) { border-color: transparent; }")
     rewriteStyleSheet(sheet as any)

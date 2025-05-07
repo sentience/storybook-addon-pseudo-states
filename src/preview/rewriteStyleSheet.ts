@@ -2,7 +2,8 @@ import { PSEUDO_STATES, EXCLUDED_PSEUDO_ELEMENT_PATTERNS } from "../constants"
 import { splitSelectors } from "./splitSelectors"
 
 const pseudoStates = Object.values(PSEUDO_STATES)
-const pseudoStatesPattern = `:(${pseudoStates.join("|")})`
+// The negative lookbehind ensures we don't match escaped pseudo-states commonly used in Tailwind (e.g. .foo\:hover:hover).
+const pseudoStatesPattern = `(?<!\\\\):(${pseudoStates.join("|")})`
 const matchOne = new RegExp(pseudoStatesPattern)
 const matchAll = new RegExp(pseudoStatesPattern, "g")
   
